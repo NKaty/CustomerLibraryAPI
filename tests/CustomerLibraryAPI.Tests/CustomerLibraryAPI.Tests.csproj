@@ -20,8 +20,6 @@
   </ItemGroup>
 
   <ItemGroup>
-    <ProjectReference Include="..\..\src\CustomerLibraryAPI.Data\CustomerLibraryAPI.Data.csproj" />
-    <ProjectReference Include="..\..\src\CustomerLibraryAPI.WebApp\CustomerLibraryAPI.WebApp.csproj" />
     <ProjectReference Include="..\..\src\CustomerLibraryAPI\CustomerLibraryAPI.csproj" />
   </ItemGroup>
 
