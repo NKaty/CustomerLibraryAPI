@@ -1,4 +1,5 @@
 ﻿using CustomerLibraryAPI.BusinessEntities;
+using CustomerLibraryAPI.Common;
 using CustomerLibraryAPI.Data.EFRepositories;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -75,6 +76,16 @@ namespace CustomerLibraryAPI.IntegrationTests.EFRepositoryTests
         }
 
         [Fact]
+        public void ShouldThrowNotFoundExceptionWhileReadingAddress()
+        {
+            var addressRepository = new AddressRepository();
+            var fixture = new AddressRepositoryFixture();
+            fixture.CreateMockAddresses();
+
+            Assert.Throws<NotFoundException>(() => addressRepository.Read(0));
+        }
+
+        [Fact]
         public void ShouldBeAbleToUpdateAddress()
         {
             var addressRepository = new AddressRepository();
@@ -98,6 +109,16 @@ namespace CustomerLibraryAPI.IntegrationTests.EFRepositoryTests
         }
 
         [Fact]
+        public void ShouldThrowNotFoundExceptionWhileUpdatingAddress()
+        {
+            var addressRepository = new AddressRepository();
+            var fixture = new AddressRepositoryFixture();
+            fixture.CreateMockAddresses();
+
+            Assert.Throws<NotFoundException>(() => addressRepository.Update(new Address {AddressId = 0}));
+        }
+
+        [Fact]
         public void ShouldBeAbleToDeleteAddress()
         {
             var addressRepository = new AddressRepository();
@@ -108,9 +129,18 @@ namespace CustomerLibraryAPI.IntegrationTests.EFRepositoryTests
             Assert.NotNull(createdAddress);
 
             addressRepository.Delete(addressId);
-            var deletedAddress = addressRepository.Read(addressId);
+            
+            Assert.Throws<NotFoundException>(() => addressRepository.Read(addressId));
+        }
 
-            Assert.Null(deletedAddress);
+        [Fact]
+        public void ShouldThrowNotFoundExceptionWhileDeletingAddress()
+        {
+            var addressRepository = new AddressRepository();
+            var fixture = new AddressRepositoryFixture();
+            fixture.CreateMockAddresses();
+
+            Assert.Throws<NotFoundException>(() => addressRepository.Delete(0));
         }
     }
 

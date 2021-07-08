@@ -56,15 +56,14 @@ namespace CustomerLibraryAPI.Data.EFRepositories
         {
             var dbAddress = _context.Addresses.Find(address.AddressId);
 
-            if (address is null)
+            if (dbAddress is null)
             {
                 throw new NotFoundException("Address is not found.");
             }
 
             _context.Entry(dbAddress).CurrentValues.SetValues(address);
 
-                _context.SaveChanges();
-            
+            _context.SaveChanges();
         }
 
         public void Delete(int addressId)
