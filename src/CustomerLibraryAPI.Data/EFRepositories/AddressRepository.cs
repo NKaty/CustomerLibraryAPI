@@ -1,7 +1,9 @@
-﻿using CustomerLibraryAPI.BusinessEntities;
+﻿using System;
+using CustomerLibraryAPI.BusinessEntities;
 using CustomerLibraryAPI.Repositories;
 using System.Collections.Generic;
 using System.Linq;
+using CustomerLibraryAPI.Common;
 
 namespace CustomerLibraryAPI.Data.EFRepositories
 {
@@ -30,7 +32,14 @@ namespace CustomerLibraryAPI.Data.EFRepositories
 
         public Address Read(int addressId)
         {
-            return _context.Addresses.Find(addressId);
+            var address = _context.Addresses.Find(addressId);
+
+            if (address is null)
+            {
+                throw new NotFoundException("Address is not found.");
+            }
+
+            return address;
         }
 
         public List<Address> ReadByCustomerId(int customerId)
@@ -47,24 +56,29 @@ namespace CustomerLibraryAPI.Data.EFRepositories
         {
             var dbAddress = _context.Addresses.Find(address.AddressId);
 
-            if (dbAddress != null)
+            if (address is null)
             {
-                _context.Entry(dbAddress).CurrentValues.SetValues(address);
+                throw new NotFoundException("Address is not found.");
+            }
+
+            _context.Entry(dbAddress).CurrentValues.SetValues(address);
 
                 _context.SaveChanges();
-            }
+            
         }
 
         public void Delete(int addressId)
         {
             var address = _context.Addresses.Find(addressId);
 
-            if (address != null)
+            if (address is null)
             {
-                _context.Addresses.Remove(address);
-
-                _context.SaveChanges();
+                throw new NotFoundException("Address is not found.");
             }
+
+            _context.Addresses.Remove(address);
+
+            _context.SaveChanges();
         }
 
         public void DeleteAll()

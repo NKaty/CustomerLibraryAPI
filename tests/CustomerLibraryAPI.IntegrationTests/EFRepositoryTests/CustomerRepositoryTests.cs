@@ -1,6 +1,7 @@
 ﻿using CustomerLibraryAPI.BusinessEntities;
 using CustomerLibraryAPI.Data.EFRepositories;
 using System.Collections.Generic;
+using CustomerLibraryAPI.Common;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
 
@@ -61,6 +62,16 @@ namespace CustomerLibraryAPI.IntegrationTests.EFRepositoryTests
         }
 
         [Fact]
+        public void ShouldThrowNotFoundExceptionWhileReadingCustomer()
+        {
+            var customerRepository = new CustomerRepository();
+            var fixture = new CustomerRepositoryFixture();
+            var customerId = fixture.CreateMockCustomer();
+     
+            Assert.Throws<NotFoundException>(() => customerRepository.Read(customerId + 1));
+        }
+
+        [Fact]
         public void ShouldBeAbleToReadPageOfCustomers()
         {
             var customerRepository = new CustomerRepository();
@@ -101,6 +112,18 @@ namespace CustomerLibraryAPI.IntegrationTests.EFRepositoryTests
         }
 
         [Fact]
+        public void ShouldThrowNotFoundExceptionWhileUpdatingCustomer()
+        {
+            var customerRepository = new CustomerRepository();
+            var fixture = new CustomerRepositoryFixture();
+            fixture.CreateMockCustomer();
+
+            fixture.MockCustomer.CustomerId += 1;
+
+            Assert.Throws<NotFoundException>(() => customerRepository.Update(fixture.MockCustomer));
+        }
+
+        [Fact]
         public void ShouldBeAbleToDeleteCustomer()
         {
             var customerRepository = new CustomerRepository();
@@ -118,11 +141,19 @@ namespace CustomerLibraryAPI.IntegrationTests.EFRepositoryTests
             Assert.Equal(customerId, createdAddress.CustomerId);
 
             customerRepository.Delete(customerId);
-            var deletedCustomer = customerRepository.Read(customerId);
-            var deletedAddress = addressRepository.Read(addressId);
+           
+            Assert.Throws<NotFoundException>(() => customerRepository.Read(customerId));
+            Assert.Throws<NotFoundException>(() => addressRepository.Read(addressId));
+        }
 
-            Assert.Null(deletedCustomer);
-            Assert.Null(deletedAddress);
+        [Fact]
+        public void ShouldThrowNotFoundExceptionWhileDeletingCustomer()
+        {
+            var customerRepository = new CustomerRepository();
+            var fixture = new CustomerRepositoryFixture();
+            var customerId = fixture.CreateMockCustomer();
+
+            Assert.Throws<NotFoundException>(() => customerRepository.Delete(customerId + 1));
         }
     }
 

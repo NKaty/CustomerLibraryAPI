@@ -3,6 +3,7 @@ using CustomerLibraryAPI.Repositories;
 using Microsoft.EntityFrameworkCore;
 using System.Collections.Generic;
 using System.Linq;
+using CustomerLibraryAPI.Common;
 
 namespace CustomerLibraryAPI.Data.EFRepositories
 {
@@ -31,7 +32,14 @@ namespace CustomerLibraryAPI.Data.EFRepositories
 
         public Customer Read(int customerId)
         {
-            return _context.Customers.Find(customerId);
+            var customer = _context.Customers.Find(customerId);
+
+            if (customer is null)
+            {
+                throw new NotFoundException("Customer is not found.");
+            }
+
+            return customer;
         }
 
         public int Count()
@@ -48,20 +56,18 @@ namespace CustomerLibraryAPI.Data.EFRepositories
         {
             var dbCustomer = _context
                 .Customers
-                .Include("Addresses")
-                .Include("Notes")
                 .FirstOrDefault(c => c.CustomerId == customer.CustomerId);
 
-            if (dbCustomer != null)
+            if (dbCustomer is null)
             {
-                dbCustomer.FirstName = customer.FirstName;
-                dbCustomer.LastName = customer.LastName;
-                dbCustomer.PhoneNumber = customer.PhoneNumber;
-                dbCustomer.Email = customer.Email;
-                dbCustomer.TotalPurchasesAmount = customer.TotalPurchasesAmount;
-
-                _context.SaveChanges();
+                throw new NotFoundException("Customer is not found.");
             }
+
+            _context.Entry<Customer>(dbCustomer).State = EntityState.Detached;
+
+            _context.Customers.Update(customer);
+
+            _context.SaveChanges();
         }
 
         public void Delete(int customerId)
@@ -72,12 +78,14 @@ namespace CustomerLibraryAPI.Data.EFRepositories
                 .Include("Notes")
                 .FirstOrDefault(c => c.CustomerId == customerId);
 
-            if (customer != null)
+            if (customer is null)
             {
-                _context.Customers.Remove(customer);
-
-                _context.SaveChanges();
+                throw new NotFoundException("Customer is not found.");
             }
+
+            _context.Customers.Remove(customer);
+
+            _context.SaveChanges();
         }
 
         public void DeleteAll()

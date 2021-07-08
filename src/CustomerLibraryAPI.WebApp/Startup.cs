@@ -11,6 +11,10 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using CustomerLibraryAPI.BusinessEntities;
+using CustomerLibraryAPI.Data.EFRepositories;
+using CustomerLibraryAPI.Repositories;
+using CustomerLibraryAPI.WebApp.Filters;
 
 namespace CustomerLibraryAPI.WebApp
 {
@@ -27,7 +31,11 @@ namespace CustomerLibraryAPI.WebApp
         public void ConfigureServices(IServiceCollection services)
         {
 
-            services.AddControllers();
+            services.AddTransient<IDependentRepository<Note>, NoteRepository>();
+            services.AddTransient<IDependentRepository<Address>, AddressRepository>();
+            services.AddTransient<IMainRepository<Customer>, CustomerRepository>();
+
+            services.AddControllers((options) => options.Filters.Add(new ExceptionFilter()));
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CustomerLibraryAPI.WebApp", Version = "v1" });

@@ -2,13 +2,19 @@
 
   <PropertyGroup>
     <TargetFramework>net5.0</TargetFramework>
-    <UserSecretsId>853e2666-0aad-4e1d-a614-c2b5c39fb155</UserSecretsId>
+    <UserSecretsId>475d77e9-fadf-409e-b4a5-18023da6596f</UserSecretsId>
     <DockerDefaultTargetOS>Linux</DockerDefaultTargetOS>
+    <DockerfileContext>..\..</DockerfileContext>
   </PropertyGroup>
 
   <ItemGroup>
     <PackageReference Include="Microsoft.VisualStudio.Azure.Containers.Tools.Targets" Version="1.10.14" />
     <PackageReference Include="Swashbuckle.AspNetCore" Version="5.6.3" />
+  </ItemGroup>
+
+  <ItemGroup>
+    <ProjectReference Include="..\CustomerLibraryAPI.Data\CustomerLibraryAPI.Data.csproj" />
+    <ProjectReference Include="..\CustomerLibraryAPI\CustomerLibraryAPI.csproj" />
   </ItemGroup>
 
 </Project>

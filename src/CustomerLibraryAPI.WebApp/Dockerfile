@@ -7,10 +7,10 @@ EXPOSE 443
 
 FROM mcr.microsoft.com/dotnet/sdk:5.0 AS build
 WORKDIR /src
-COPY ["CustomerLibraryAPI.WebApp/CustomerLibraryAPI.WebApp.csproj", "CustomerLibraryAPI.WebApp/"]
-RUN dotnet restore "CustomerLibraryAPI.WebApp/CustomerLibraryAPI.WebApp.csproj"
+COPY ["src/CustomerLibraryAPI.WebApp/CustomerLibraryAPI.WebApp.csproj", "src/CustomerLibraryAPI.WebApp/"]
+RUN dotnet restore "src/CustomerLibraryAPI.WebApp/CustomerLibraryAPI.WebApp.csproj"
 COPY . .
-WORKDIR "/src/CustomerLibraryAPI.WebApp"
+WORKDIR "/src/src/CustomerLibraryAPI.WebApp"
 RUN dotnet build "CustomerLibraryAPI.WebApp.csproj" -c Release -o /app/build
 
 FROM build AS publish
