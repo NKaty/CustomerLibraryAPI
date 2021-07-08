@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using CustomerLibraryAPI.BusinessEntities;
+using CustomerLibraryAPI.Common;
 
 namespace CustomerLibraryAPI.Data.EFRepositories
 {
@@ -30,7 +31,14 @@ namespace CustomerLibraryAPI.Data.EFRepositories
 
         public Note Read(int noteId)
         {
-            return _context.Notes.Find(noteId);
+            var note = _context.Notes.Find(noteId);
+
+            if (note is null)
+            {
+                throw new NotFoundException("Note is not found.");
+            }
+
+            return note;
         }
 
         public List<Note> ReadByCustomerId(int customerId)
@@ -47,24 +55,27 @@ namespace CustomerLibraryAPI.Data.EFRepositories
         {
             var dbNote = _context.Notes.Find(note.NoteId);
 
-            if (dbNote != null)
+            if (dbNote is null)
             {
-                _context.Entry(dbNote).CurrentValues.SetValues(note);
-
-                _context.SaveChanges();
+                throw new NotFoundException("Note is not found.");
             }
+
+            _context.Entry(dbNote).CurrentValues.SetValues(note);
+
+            _context.SaveChanges();
         }
 
         public void Delete(int noteId)
         {
             var note = _context.Notes.Find(noteId);
-
-            if (note != null)
+            if (note is null)
             {
-                _context.Notes.Remove(note);
-
-                _context.SaveChanges();
+                throw new NotFoundException("Note is not found.");
             }
+
+            _context.Notes.Remove(note);
+
+            _context.SaveChanges();
         }
 
         public void DeleteAll()

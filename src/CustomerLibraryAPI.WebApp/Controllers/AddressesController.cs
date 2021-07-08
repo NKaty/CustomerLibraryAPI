@@ -16,7 +16,7 @@ namespace CustomerLibraryAPI.WebApp.Controllers
             _addressRepository = addressRepository;
         }
 
-        // GET: api/<AddressController>/
+        // GET: api/<AddressController>?customerId=10
         [HttpGet]
         public IEnumerable<Address> GetByCustomerId(int customerId)
         {

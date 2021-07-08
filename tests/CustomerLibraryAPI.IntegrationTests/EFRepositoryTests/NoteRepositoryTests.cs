@@ -1,4 +1,5 @@
 ﻿using CustomerLibraryAPI.BusinessEntities;
+using CustomerLibraryAPI.Common;
 using CustomerLibraryAPI.Data.EFRepositories;
 using Microsoft.EntityFrameworkCore;
 using Xunit;
@@ -45,6 +46,16 @@ namespace CustomerLibraryAPI.IntegrationTests.EFRepositoryTests
         }
 
         [Fact]
+        public void ShouldThrowNotFoundExceptionWhileReadingNote()
+        {
+            var noteRepository = new NoteRepository();
+            var fixture = new NoteRepositoryFixture();
+            fixture.CreateMockNote();
+
+            Assert.Throws<NotFoundException>(() => noteRepository.Read(0));
+        }
+
+        [Fact]
         public void ShouldBeAbleToReadNotesByCustomerId()
         {
             var noteRepository = new NoteRepository();
@@ -86,6 +97,16 @@ namespace CustomerLibraryAPI.IntegrationTests.EFRepositoryTests
         }
 
         [Fact]
+        public void ShouldThrowNotFoundExceptionWhileUpdatingNote()
+        {
+            var noteRepository = new NoteRepository();
+            var fixture = new NoteRepositoryFixture();
+            fixture.CreateMockNote();
+
+            Assert.Throws<NotFoundException>(() => noteRepository.Update(new Note { NoteId = 0 }));
+        }
+
+        [Fact]
         public void ShouldBeAbleToDeleteNote()
         {
             var noteRepository = new NoteRepository();
@@ -96,9 +117,18 @@ namespace CustomerLibraryAPI.IntegrationTests.EFRepositoryTests
             Assert.NotNull(createdNote);
 
             noteRepository.Delete(noteId);
-            var deletedNote = noteRepository.Read(noteId);
 
-            Assert.Null(deletedNote);
+            Assert.Throws<NotFoundException>(() => noteRepository.Read(noteId));
+        }
+
+        [Fact]
+        public void ShouldThrowNotFoundExceptionWhileDeletingNote()
+        {
+            var noteRepository = new NoteRepository();
+            var fixture = new NoteRepositoryFixture();
+            fixture.CreateMockNote();
+
+            Assert.Throws<NotFoundException>(() => noteRepository.Delete(0));
         }
     }
 
