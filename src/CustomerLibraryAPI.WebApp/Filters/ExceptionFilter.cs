@@ -11,7 +11,7 @@ namespace CustomerLibraryAPI.WebApp.Filters
         public override void OnException(ExceptionContext context)
         {
             context.ExceptionHandled = true;
-            if (context.Exception.GetType() == typeof(NotFoundException))
+            if (context.Exception is NotFoundException)
             {
                 context.Result = new NotFoundObjectResult(new ErrorModel
                 {
@@ -19,7 +19,7 @@ namespace CustomerLibraryAPI.WebApp.Filters
                     Status = StatusCodes.Status404NotFound
                 });
             }
-            else if (context.Exception.GetType() == typeof(NotDeletedException))
+            else if (context.Exception is NotDeletedException)
             {
                 context.Result = new ObjectResult(new ErrorModel
                 {
