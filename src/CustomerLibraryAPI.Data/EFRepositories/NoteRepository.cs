@@ -1,6 +1,7 @@
 ﻿using CustomerLibraryAPI.Repositories;
 using System.Collections.Generic;
 using System.Linq;
+using System.Threading;
 using CustomerLibraryAPI.BusinessEntities;
 using CustomerLibraryAPI.Common;
 
@@ -68,9 +69,17 @@ namespace CustomerLibraryAPI.Data.EFRepositories
         public void Delete(int noteId)
         {
             var note = _context.Notes.Find(noteId);
+
             if (note is null)
             {
                 throw new NotFoundException("Note is not found.");
+            }
+
+            var count = CountByCustomerId(note.CustomerId);
+
+            if (count < 2)
+            {
+                throw new NotDeletedException("Cannot delete the only note.");
             }
 
             _context.Notes.Remove(note);

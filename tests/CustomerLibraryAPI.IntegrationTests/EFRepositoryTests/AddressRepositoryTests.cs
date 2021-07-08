@@ -123,14 +123,25 @@ namespace CustomerLibraryAPI.IntegrationTests.EFRepositoryTests
         {
             var addressRepository = new AddressRepository();
             var fixture = new AddressRepositoryFixture();
+            var customerId = fixture.CreateMockAddresses();
+            var addresses = addressRepository.ReadByCustomerId(customerId);
+
+            addressRepository.Delete(addresses[0].AddressId);
+
+            Assert.Throws<NotFoundException>(() => addressRepository.Read(addresses[0].AddressId));
+        }
+
+        [Fact]
+        public void ShouldThrowNotDeletedException()
+        {
+            var addressRepository = new AddressRepository();
+            var fixture = new AddressRepositoryFixture();
             var addressId = fixture.CreateMockAddress();
             var createdAddress = addressRepository.Read(addressId);
 
             Assert.NotNull(createdAddress);
 
-            addressRepository.Delete(addressId);
-            
-            Assert.Throws<NotFoundException>(() => addressRepository.Read(addressId));
+            Assert.Throws<NotDeletedException>(() => addressRepository.Delete(addressId));
         }
 
         [Fact]

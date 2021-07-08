@@ -111,14 +111,25 @@ namespace CustomerLibraryAPI.IntegrationTests.EFRepositoryTests
         {
             var noteRepository = new NoteRepository();
             var fixture = new NoteRepositoryFixture();
+            var customerId = fixture.CreateMockNotes();
+            var notes = noteRepository.ReadByCustomerId(customerId);
+
+            noteRepository.Delete(notes[0].NoteId);
+
+            Assert.Throws<NotFoundException>(() => noteRepository.Read(notes[0].NoteId));
+        }
+
+        [Fact]
+        public void ShouldThrowNotDeletedException()
+        {
+            var noteRepository = new NoteRepository();
+            var fixture = new NoteRepositoryFixture();
             var noteId = fixture.CreateMockNote();
             var createdNote = noteRepository.Read(noteId);
 
             Assert.NotNull(createdNote);
 
-            noteRepository.Delete(noteId);
-
-            Assert.Throws<NotFoundException>(() => noteRepository.Read(noteId));
+            Assert.Throws<NotDeletedException>(() => noteRepository.Delete(noteId));
         }
 
         [Fact]

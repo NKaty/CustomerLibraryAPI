@@ -19,6 +19,17 @@ namespace CustomerLibraryAPI.WebApp.Filters
                     Status = StatusCodes.Status404NotFound
                 });
             }
+            else if (context.Exception.GetType() == typeof(NotDeletedException))
+            {
+                context.Result = new ObjectResult(new ErrorModel
+                {
+                    Title = context.Exception.Message,
+                    Status = StatusCodes.Status405MethodNotAllowed
+                })
+                {
+                    StatusCode = StatusCodes.Status405MethodNotAllowed
+                };
+            }
             else
             {
                 context.Result = new ObjectResult(new ErrorModel

@@ -75,6 +75,13 @@ namespace CustomerLibraryAPI.Data.EFRepositories
                 throw new NotFoundException("Address is not found.");
             }
 
+            var count = CountByCustomerId(address.CustomerId);
+
+            if (count < 2)
+            {
+                throw new NotDeletedException("Cannot delete the only address.");
+            }
+
             _context.Addresses.Remove(address);
 
             _context.SaveChanges();
