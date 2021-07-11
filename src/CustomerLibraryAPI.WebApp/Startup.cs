@@ -10,6 +10,7 @@ using Microsoft.OpenApi.Models;
 using System;
 using System.Collections.Generic;
 using System.Linq;
+using System.Text.Json.Serialization;
 using System.Threading.Tasks;
 using CustomerLibraryAPI.BusinessEntities;
 using CustomerLibraryAPI.Data.EFRepositories;
@@ -36,6 +37,12 @@ namespace CustomerLibraryAPI.WebApp
             services.AddTransient<IMainRepository<Customer>, CustomerRepository>();
 
             services.AddControllers((options) => options.Filters.Add(new ExceptionFilter()));
+            services.AddControllers().AddJsonOptions(options =>
+            {
+                options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
+                options.JsonSerializerOptions.IgnoreNullValues = true;
+            });
+
             services.AddSwaggerGen(c =>
             {
                 c.SwaggerDoc("v1", new OpenApiInfo { Title = "CustomerLibraryAPI.WebApp", Version = "v1" });
