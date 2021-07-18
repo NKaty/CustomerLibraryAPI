@@ -32,7 +32,10 @@ namespace CustomerLibraryAPI.Data.EFRepositories
 
         public Customer Read(int customerId)
         {
-            var customer = _context.Customers.Find(customerId);
+            var customer = _context.Customers
+                .Include("Addresses")
+                .Include("Notes")
+                .FirstOrDefault(c => c.CustomerId == customerId);
 
             if (customer is null)
             {

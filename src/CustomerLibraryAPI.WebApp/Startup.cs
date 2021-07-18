@@ -21,6 +21,8 @@ namespace CustomerLibraryAPI.WebApp
 {
     public class Startup
     {
+        readonly string AllowSpecificOrigins = "_allowSpecificOrigins";
+
         public Startup(IConfiguration configuration)
         {
             Configuration = configuration;
@@ -31,6 +33,11 @@ namespace CustomerLibraryAPI.WebApp
         // This method gets called by the runtime. Use this method to add services to the container.
         public void ConfigureServices(IServiceCollection services)
         {
+            services.AddCors(options =>
+            {
+                options.AddPolicy(name: AllowSpecificOrigins,
+                    builder => { builder.WithOrigins("*").AllowAnyHeader().AllowAnyMethod(); });
+            });
 
             services.AddTransient<IDependentRepository<Note>, NoteRepository>();
             services.AddTransient<IDependentRepository<Address>, AddressRepository>();
@@ -40,12 +47,12 @@ namespace CustomerLibraryAPI.WebApp
             services.AddControllers().AddJsonOptions(options =>
             {
                 options.JsonSerializerOptions.Converters.Add(new JsonStringEnumConverter());
-                options.JsonSerializerOptions.IgnoreNullValues = true;
+                options.JsonSerializerOptions.IgnoreNullValues = false;
             });
 
             services.AddSwaggerGen(c =>
             {
-                c.SwaggerDoc("v1", new OpenApiInfo { Title = "CustomerLibraryAPI.WebApp", Version = "v1" });
+                c.SwaggerDoc("v1", new OpenApiInfo {Title = "CustomerLibraryAPI.WebApp", Version = "v1"});
             });
         }
 
@@ -63,12 +70,11 @@ namespace CustomerLibraryAPI.WebApp
 
             app.UseRouting();
 
+            app.UseCors(AllowSpecificOrigins);
+
             app.UseAuthorization();
 
-            app.UseEndpoints(endpoints =>
-            {
-                endpoints.MapControllers();
-            });
+            app.UseEndpoints(endpoints => { endpoints.MapControllers(); });
         }
     }
 }
