@@ -14,14 +14,7 @@ namespace CustomerLibraryAPI.Data.EFRepositories
 
         public static CustomerLibraryContext Current
         {
-            get {
-                if (_context is null) {
-                    _context = new CustomerLibraryContext(_contextOptions);
-                    _context.Database.EnsureCreated();
-                }
-
-                return _context;
-            }
+            get => _context = _context ?? new CustomerLibraryContext(_contextOptions);
             set => _context = value;
         }
     }
