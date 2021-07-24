@@ -8,13 +8,20 @@ namespace CustomerLibraryAPI.Data.EFRepositories
 
         private static DbContextOptions<CustomerLibraryContext> _contextOptions =
             new DbContextOptionsBuilder<CustomerLibraryContext>()
-                .UseSqlServer("Server=Desktop;Database=CustomersTests;Trusted_Connection=True;")
+                .UseSqlServer("Server=Desktop;Database=CustomersDB;Trusted_Connection=True;")
                 .Options;
 
 
         public static CustomerLibraryContext Current
         {
-            get => _context = _context ?? new CustomerLibraryContext(_contextOptions);
+            get {
+                if (_context is null) {
+                    _context = new CustomerLibraryContext(_contextOptions);
+                    _context.Database.EnsureCreated();
+                }
+
+                return _context;
+            }
             set => _context = value;
         }
     }
